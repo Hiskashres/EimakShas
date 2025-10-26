@@ -6,11 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EimakShas.Controllers
 {
-    public class userController : ControllerBase
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<IActionResult> AddUser(User user)
         {
             if (user == null)
@@ -22,10 +24,9 @@ namespace EimakShas.Controllers
             return Ok($"{user.FirstName} {user.LastName} has succesfully been added.");
         }
 
-        public userController(ApplicationDbContext dbContext)
+        public UserController(ApplicationDbContext dbContext)
         {
             _context = dbContext;
         }
-
     }
 }

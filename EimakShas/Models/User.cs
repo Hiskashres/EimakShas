@@ -11,10 +11,10 @@ namespace EimakShas.Models
         [Required(ErrorMessage = "This is a required field")]
         public string LastName { get; set; }
         public string Phone {  get; set; }
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; }
         public bool DafPerDay { get; set; }
         [Required(ErrorMessage = "This is a required field")]
-        public string HasText { get; set; }
+        public bool HasText { get; set; }
         public bool IsAdmin { get; set; }
         public ICollection<Umid> Umidim { get; set; } = new List<Umid>();
     }

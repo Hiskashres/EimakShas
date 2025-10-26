@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EimakShas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251005014730_addDafIsCompleted_HasText_IsEdmin")]
-    partial class addDafIsCompleted_HasText_IsEdmin
+    [Migration("20251026015608_InitialCreateNew")]
+    partial class InitialCreateNew
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,7 +115,7 @@ namespace EimakShas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("UmidId");
@@ -142,9 +142,8 @@ namespace EimakShas.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HasText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("HasText")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit");
@@ -154,7 +153,6 @@ namespace EimakShas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
@@ -198,9 +196,7 @@ namespace EimakShas.Migrations
 
                     b.HasOne("EimakShas.Models.User", null)
                         .WithMany("Umidim")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Daf");
                 });
