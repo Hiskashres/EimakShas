@@ -3,6 +3,7 @@ using EimakShas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EimakShas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251102223530_addUserUmid")]
+    partial class addUserUmid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +35,6 @@ namespace EimakShas.Migrations
                     b.Property<string>("DafLetter")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DafNumber")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted_Daf")
                         .HasColumnType("bit");
@@ -57,9 +57,6 @@ namespace EimakShas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MasechtaId"));
 
-                    b.Property<int>("DafimFinished")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LastUmidDoubleSided")
                         .HasColumnType("bit");
 
@@ -73,31 +70,31 @@ namespace EimakShas.Migrations
                     b.Property<int>("MasechtaOrder")
                         .HasColumnType("int");
 
-                    b.Property<int>("PercentageFinished")
+                    b.Property<int>("ShasCycleId")
                         .HasColumnType("int");
 
                     b.HasKey("MasechtaId");
 
+                    b.HasIndex("ShasCycleId");
+
                     b.ToTable("Masechtas");
                 });
 
-            modelBuilder.Entity("EimakShas.Models.ShasInfo", b =>
+            modelBuilder.Entity("EimakShas.Models.ShasCycle", b =>
                 {
-                    b.Property<int>("ShasInfoId")
+                    b.Property<int>("ShasCycleId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShasInfoId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShasCycleId"));
 
-                    b.Property<int>("DafimCount_Shas")
-                        .HasColumnType("int");
+                    b.Property<string>("ShasCycleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShasPercentage")
-                        .HasColumnType("int");
+                    b.HasKey("ShasCycleId");
 
-                    b.HasKey("ShasInfoId");
-
-                    b.ToTable("ShasInfo");
+                    b.ToTable("ShasCycles");
                 });
 
             modelBuilder.Entity("EimakShas.Models.Umid", b =>
@@ -139,12 +136,6 @@ namespace EimakShas.Migrations
                     b.Property<bool>("DafPerDay")
                         .HasColumnType("bit");
 
-                    b.Property<int>("DafimAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DafimFinished")
-                        .HasColumnType("int");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -161,9 +152,6 @@ namespace EimakShas.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PercentageFinished")
-                        .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -201,6 +189,17 @@ namespace EimakShas.Migrations
                         .IsRequired();
 
                     b.Navigation("Masechta");
+                });
+
+            modelBuilder.Entity("EimakShas.Models.Masechta", b =>
+                {
+                    b.HasOne("EimakShas.Models.ShasCycle", "ShasCycle")
+                        .WithMany("Masechtas")
+                        .HasForeignKey("ShasCycleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ShasCycle");
                 });
 
             modelBuilder.Entity("EimakShas.Models.Umid", b =>
@@ -241,6 +240,11 @@ namespace EimakShas.Migrations
             modelBuilder.Entity("EimakShas.Models.Masechta", b =>
                 {
                     b.Navigation("Dafim");
+                });
+
+            modelBuilder.Entity("EimakShas.Models.ShasCycle", b =>
+                {
+                    b.Navigation("Masechtas");
                 });
 
             modelBuilder.Entity("EimakShas.Models.Umid", b =>

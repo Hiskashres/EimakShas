@@ -31,11 +31,11 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var shasService = scope.ServiceProvider.GetRequiredService<LoadShasDataService>();
-//    await shasService.InsertShasDataServiceAsync();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var shasService = scope.ServiceProvider.GetRequiredService<LoadShasDataService>();
+    await shasService.InsertShasDataServiceAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

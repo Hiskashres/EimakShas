@@ -7,7 +7,7 @@ namespace EimakShas.Services
 {
     public class LoadShasDataService(ApplicationDbContext _context) : IInsertShasDataService
     {
-        private List<ShasCycle> _shasCycles = [];
+        private List<ShasInfo> _shasInfo = [];
         private List<Masechta> _masechtas = [];
         private List<Daf> _dafim = [];
         private List<Umid> _umidim = [];
@@ -15,50 +15,46 @@ namespace EimakShas.Services
         public async Task InsertShasDataServiceAsync() 
         {
             //Earase all old data
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
-            await _context.SaveChangesAsync();
+            //await _context.Database.EnsureDeletedAsync();
+            //await _context.Database.EnsureCreatedAsync();
+            //await _context.SaveChangesAsync();
 
-            Console.Write("Enter a Shas Cycle name: ");
-            string shasCycleName = Console.ReadLine();
+            if (_context.ShasInfo.Any()) return;
 
-            await LoadShasCycleAsync(shasCycleName);
+            await LoadShasInfoAsync();
             await LoadMasechtasAsync();
             await LoadDafimAsync();
             await LoadUmidimAsync();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Shas cycle \"{shasCycleName}\" loaded successfully!");
+            Console.WriteLine($"Shas data loaded successfully!");
             Console.ResetColor();
             Console.ReadLine();
         }
-        
-        private async Task LoadShasCycleAsync(string shasCycleName)
+
+        private async Task LoadShasInfoAsync()
         {
-            _shasCycles.Add(new ShasCycle{ ShasCycleName = shasCycleName});
-            await _context.AddRangeAsync( _shasCycles );
+            _shasInfo.Add(new ShasInfo { DafimCount_Shas = 0, ShasPercentage = 0 });
+            await _context.AddRangeAsync(_shasInfo);
             await _context.SaveChangesAsync();
         }
 
         private async Task LoadMasechtasAsync() 
         {
-            foreach (ShasCycle shasCycle in _shasCycles)
-            {
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "ברכות", MasechtaDafCount = 63, MasechtaOrder = 1, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "שבת", MasechtaDafCount = 156, MasechtaOrder = 2, LastUmidDoubleSided = true });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "עירובין", MasechtaDafCount = 104, MasechtaOrder = 3, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "פסחים", MasechtaDafCount = 120, MasechtaOrder = 4, LastUmidDoubleSided = true });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "שקלים", MasechtaDafCount = 21, MasechtaOrder = 5, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "ראש השנה", MasechtaDafCount = 34, MasechtaOrder = 6, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "יומא", MasechtaDafCount = 87, MasechtaOrder = 7, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "סוכה", MasechtaDafCount = 55, MasechtaOrder = 8, LastUmidDoubleSided = true });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "ביצה", MasechtaDafCount = 39, MasechtaOrder = 9, LastUmidDoubleSided = true });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "תענית", MasechtaDafCount = 30, MasechtaOrder = 10, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "מגילה", MasechtaDafCount = 31, MasechtaOrder = 11, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "מועד קטן", MasechtaDafCount = 28, MasechtaOrder = 13, LastUmidDoubleSided = false });
-                _masechtas.Add(new Masechta { ShasCycleId = shasCycle.ShasCycleId, MasechtaName = "חגיגה", MasechtaDafCount = 26, MasechtaOrder = 14, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "ברכות", MasechtaDafCount = 63, MasechtaOrder = 1, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "שבת", MasechtaDafCount = 156, MasechtaOrder = 2, LastUmidDoubleSided = true });
+                _masechtas.Add(new Masechta { MasechtaName = "עירובין", MasechtaDafCount = 104, MasechtaOrder = 3, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "פסחים", MasechtaDafCount = 120, MasechtaOrder = 4, LastUmidDoubleSided = true });
+                _masechtas.Add(new Masechta { MasechtaName = "שקלים", MasechtaDafCount = 21, MasechtaOrder = 5, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "ראש השנה", MasechtaDafCount = 34, MasechtaOrder = 6, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "יומא", MasechtaDafCount = 87, MasechtaOrder = 7, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "סוכה", MasechtaDafCount = 55, MasechtaOrder = 8, LastUmidDoubleSided = true });
+                _masechtas.Add(new Masechta { MasechtaName = "ביצה", MasechtaDafCount = 39, MasechtaOrder = 9, LastUmidDoubleSided = true });
+                _masechtas.Add(new Masechta { MasechtaName = "תענית", MasechtaDafCount = 30, MasechtaOrder = 10, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "מגילה", MasechtaDafCount = 31, MasechtaOrder = 11, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "מועד קטן", MasechtaDafCount = 28, MasechtaOrder = 13, LastUmidDoubleSided = false });
+                _masechtas.Add(new Masechta { MasechtaName = "חגיגה", MasechtaDafCount = 26, MasechtaOrder = 14, LastUmidDoubleSided = false });
                 //And so on...
-            }
             await _context.AddRangeAsync(_masechtas);
             await _context.SaveChangesAsync();
         }
@@ -71,7 +67,7 @@ namespace EimakShas.Services
                 while (dafimCount < masechta.MasechtaDafCount)
                 {
                     dafimCount++;
-                    _dafim.Add(new Daf {MasechtaId = masechta.MasechtaId, DafLetter = ConvertDafLetter(dafimCount), IsCompleted = false });
+                    _dafim.Add(new Daf {MasechtaId = masechta.MasechtaId, DafLetter = ConvertDafLetter(dafimCount), DafNumber = dafimCount, IsCompleted_Daf = false });
                 }
             }
             await _context.AddRangeAsync(_dafim);
@@ -86,8 +82,8 @@ namespace EimakShas.Services
                 {
                     foreach (Daf daf in _dafim.Where(daf => daf.MasechtaId == masechta.MasechtaId))
                     {
-                        _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted = false });
-                        _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"ב", IsCompleted = false });
+                        _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted_Umid = false });
+                        _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"ב", IsCompleted_Umid = false });
                     }
                 }
                 else
@@ -98,12 +94,12 @@ namespace EimakShas.Services
                         dafimCount++;
                         if (dafimCount < masechta.MasechtaDafCount)
                         {
-                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted = false });
-                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"ב", IsCompleted = false });
+                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted_Umid = false });
+                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"ב", IsCompleted_Umid = false });
                         }
                         else
                         {
-                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted = false });
+                            _umidim.Add(new Umid { DafId = daf.DafId, UserId = null, UmidLetter = "ע\"א", IsCompleted_Umid = false });
                         }
                     }
                 }

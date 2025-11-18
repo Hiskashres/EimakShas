@@ -3,6 +3,7 @@ using EimakShas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EimakShas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251102234646_removeShasCycle_addShasInfo")]
+    partial class removeShasCycle_addShasInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +35,6 @@ namespace EimakShas.Migrations
                     b.Property<string>("DafLetter")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DafNumber")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsCompleted_Daf")
                         .HasColumnType("bit");
@@ -57,9 +57,6 @@ namespace EimakShas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MasechtaId"));
 
-                    b.Property<int>("DafimFinished")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LastUmidDoubleSided")
                         .HasColumnType("bit");
 
@@ -71,9 +68,6 @@ namespace EimakShas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MasechtaOrder")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PercentageFinished")
                         .HasColumnType("int");
 
                     b.HasKey("MasechtaId");
@@ -139,12 +133,6 @@ namespace EimakShas.Migrations
                     b.Property<bool>("DafPerDay")
                         .HasColumnType("bit");
 
-                    b.Property<int>("DafimAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DafimFinished")
-                        .HasColumnType("int");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -161,9 +149,6 @@ namespace EimakShas.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PercentageFinished")
-                        .HasColumnType("int");
 
                     b.Property<string>("Phone")
                         .IsRequired()

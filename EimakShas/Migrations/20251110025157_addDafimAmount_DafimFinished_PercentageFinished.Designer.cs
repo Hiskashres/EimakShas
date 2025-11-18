@@ -3,6 +3,7 @@ using EimakShas.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EimakShas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110025157_addDafimAmount_DafimFinished_PercentageFinished")]
+    partial class addDafimAmount_DafimFinished_PercentageFinished
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,9 +60,6 @@ namespace EimakShas.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MasechtaId"));
 
-                    b.Property<int>("DafimFinished")
-                        .HasColumnType("int");
-
                     b.Property<bool>("LastUmidDoubleSided")
                         .HasColumnType("bit");
 
@@ -71,9 +71,6 @@ namespace EimakShas.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MasechtaOrder")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PercentageFinished")
                         .HasColumnType("int");
 
                     b.HasKey("MasechtaId");
