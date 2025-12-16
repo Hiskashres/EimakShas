@@ -8,6 +8,7 @@
         public int DafNumber { get; set; }
         public bool IsCompleted_Daf { get; set; }
         public Masechta Masechta { get; set; }
-        public ICollection<Umid> Umidim { get; set; } = new List<Umid>();
+        public YomHashas_Daf YomHashas_Daf { get; set; }
+        public ICollection<Umid> Umidim { get; set; } = [];
     }
 }

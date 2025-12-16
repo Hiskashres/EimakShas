@@ -12,14 +12,16 @@ namespace EimakShas.Controllers
         [HttpGet("masechtas")]
         public IActionResult GetMasechtas()
         {
-            var masechtas = _context.Masechtas.ToList();
+            var masechtas = _context.Masechtas
+                .ToList();
             return Ok(masechtas);
         }
 
         [HttpGet("dafim/{masechtaId}")]
         public IActionResult GetDafim(int masechtaId)
         {
-            var dafim = _context.Dafim.Where(d => d.MasechtaId == masechtaId)
+            var dafim = _context.Dafim
+                .Where(d => d.MasechtaId == masechtaId)
                 .ToList();
             return Ok(dafim);
         }

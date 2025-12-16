@@ -15,6 +15,7 @@ namespace EimakShas.Models
         public string Phone {  get; set; }
 
         public string? PasswordHash { get; set; }
+        public int? ChavrisaId { get; set; }
 
         public int DafimAmount { get; set; }
 
@@ -29,6 +30,12 @@ namespace EimakShas.Models
 
         public bool IsAdmin { get; set; }
 
+        public User? Chavrisa { get; set; }
+
+        public User? LinkedTo { get; set; }
+
         public ICollection<UserUmid>? UserUmidim { get; set; } = [];
+
+        public ICollection<YomHashas_Daf>? yomHashas_Dafim { get; set; } = [];
     }
 }

@@ -13,6 +13,8 @@ namespace EimakShas.Data
         public DbSet<Daf> Dafim {  get; set; }
         public DbSet<Umid> Umidim { get; set; }
         public DbSet<UserUmid> UserUmidim { get; set; }
+        public DbSet<YomHashas> YomHashas { get; set; }
+        public DbSet<YomHashas_Daf> YomHashas_Dafim { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,8 +1,7 @@
 ﻿using EimakShas.Data;
 using EimakShas.Interfaces;
-using EimakShas.Migrations;
 using EimakShas.Models;
-using Microsoft.EntityFrameworkCore;
+
 namespace EimakShas.Services
 {
     public class LoadShasDataService(ApplicationDbContext _context) : IInsertShasDataService
