@@ -5,25 +5,25 @@
 namespace EimakShas.Migrations
 {
     /// <inheritdoc />
-    public partial class addDafPerDay : Migration
+    public partial class addYomHashasDafimAmount : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "DafPerDay",
-                table: "Users",
-                type: "bit",
+            migrationBuilder.AddColumn<int>(
+                name: "DafimAmount",
+                table: "YomHashas",
+                type: "int",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: 0);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "DafPerDay",
-                table: "Users");
+                name: "DafimAmount",
+                table: "YomHashas");
         }
     }
 }

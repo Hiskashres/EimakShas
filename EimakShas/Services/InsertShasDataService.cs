@@ -13,7 +13,7 @@ namespace EimakShas.Services
 
         public async Task InsertShasDataServiceAsync() 
         {
-            //Earase all old data
+            ////Earase all old data
             //await _context.Database.EnsureDeletedAsync();
             //await _context.Database.EnsureCreatedAsync();
             //await _context.SaveChangesAsync();
@@ -33,7 +33,7 @@ namespace EimakShas.Services
 
         private async Task LoadShasInfoAsync()
         {
-            _shasInfo.Add(new ShasInfo { DafimCount_Shas = 0, ShasPercentage = 0 });
+            _shasInfo.Add(new ShasInfo { DafimCount_Shas = 0, DafimFinished = 0, DafimLearned =0 , PercentageFinished = 0 });
             await _context.AddRangeAsync(_shasInfo);
             await _context.SaveChangesAsync();
         }

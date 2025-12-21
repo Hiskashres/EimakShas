@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EimakShas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251215201433_addYomHashas_YomHashasDaf_ChavrisaRow")]
-    partial class addYomHashas_YomHashasDaf_ChavrisaRow
+    [Migration("20251216205029_addYomHashas.DafimAmount")]
+    partial class addYomHashasDafimAmount
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,7 +96,13 @@ namespace EimakShas.Migrations
                     b.Property<int>("DafimCount_Shas")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShasPercentage")
+                    b.Property<int>("DafimFinished")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DafimLearned")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PercentageFinished")
                         .HasColumnType("int");
 
                     b.HasKey("ShasInfoId");
@@ -214,6 +220,9 @@ namespace EimakShas.Migrations
                     b.Property<int>("BonusGoal")
                         .HasColumnType("int");
 
+                    b.Property<int>("DafimAmount")
+                        .HasColumnType("int");
+
                     b.Property<int>("DafimCompleted")
                         .HasColumnType("int");
 
@@ -224,6 +233,9 @@ namespace EimakShas.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("PercentCompleted")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PercentCompleted_Bonus")
                         .HasColumnType("int");
 
                     b.HasKey("YomHashasId");
