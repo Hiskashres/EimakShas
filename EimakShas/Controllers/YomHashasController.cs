@@ -1,5 +1,6 @@
 ﻿using EimakShas.Data;
 using EimakShas.DTOs;
+using EimakShas.Models.Requests;
 using EimakShas.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace EimakShas.Controllers
         private YomHashasService yomHashasService = new (_context);
 
 
-        [HttpPost("AssignDafim")]
+        [HttpPost("assignDafim")]
         public IActionResult AssignDafimToYomHashas(int[] dafimIds)
         {
             yomHashasService.AddDafimToYomHashas(dafimIds);
@@ -28,9 +29,10 @@ namespace EimakShas.Controllers
         }
 
         [HttpPost("setGoals")]
-        public IActionResult SetGoals(int firstGoal, int bonusGoal, TimeOnly endTime)
+        public IActionResult SetGoals([FromBody] SetGoalsRequest request)
         {
-            yomHashasService.SetGoals(firstGoal, bonusGoal, endTime);
+            var endTime_TimeOnly = TimeOnly.Parse(request.EndTime);
+            yomHashasService.SetGoals(request.MainGoal, request.BonusGoal, endTime_TimeOnly);
             return Ok();
         }
 

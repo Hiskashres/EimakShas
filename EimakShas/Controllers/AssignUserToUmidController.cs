@@ -2,7 +2,6 @@
 using EimakShas.Models;
 using EimakShas.Models.Requests;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace EimakShas.Controllers
 {
