@@ -33,7 +33,9 @@ namespace EimakShas.Controllers
                     DafPerDay = user.DafPerDay,
                     HasText = user.HasText,
                     ChavrisaId = user.ChavrisaId,
-                    ChavrisaName = user.Chavrisa.FirstName + " " + user.Chavrisa.LastName
+                    ChavrisaName = user.Chavrisa != null
+                ? $"{user.Chavrisa.FirstName} {user.Chavrisa.LastName}"
+                : null
                 });
 
             }
@@ -53,20 +55,93 @@ namespace EimakShas.Controllers
         {
             if (user == null)
             {
-                return BadRequest(new { message = "Please fill in the required fields."});
+                return BadRequest(new { message = "Please fill in the required fields." });
             }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return Ok(user);
+
+            if (user.ChavrisaId == 0)
+            {
+                user.ChavrisaId = null;
+            }
+
+            try
+            {
+                // Validate provided chavrisa id refers to an existing user BEFORE inserting
+                if (user.ChavrisaId.HasValue)
+                {
+                    var referenced = await _context.Users.FindAsync(user.ChavrisaId.Value);
+                    if (referenced == null)
+                        return BadRequest(new { message = $"Chavrisa with id {user.ChavrisaId.Value} not found." });
+                    if (referenced.UserId == user.UserId)
+                        return BadRequest(new { message = "A user cannot be their own chavrisa." });
+                }
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync(); // new user id available
+
+                // reciprocal update
+                if (user.ChavrisaId.HasValue && user.ChavrisaId.Value > 0 && user.ChavrisaId.Value != user.UserId)
+                {
+                    var other = await _context.Users.FindAsync(user.ChavrisaId.Value);
+                    if (other != null)
+                    {
+                        other.ChavrisaId = user.UserId;
+                        _context.Users.Update(other);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+
+                // null navigation properties before serializing to avoid cycles
+                user.Chavrisa = null;
+                var otherForSerialization = user.ChavrisaId.HasValue ? await _context.Users.FindAsync(user.ChavrisaId.Value) : null;
+                if (otherForSerialization != null) otherForSerialization.Chavrisa = null;
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // return error details to the client for debugging (remove in production)
+                return StatusCode(500, new { message = ex.Message, inner = ex.InnerException?.Message, stack = ex.StackTrace });
+            }
         }
 
+
         [HttpDelete("Delete/{userId}")]
-        public IActionResult DeleteUser(int userId)
+        public async Task<IActionResult> DeleteUser(int userId)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
-            _context.Users.Remove(user);
-            _context.SaveChanges();
-            return Ok();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) return NotFound();
+
+            // Use a transaction to keep DB consistent
+            await using var tx = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Clear chavrisa links that point to this user
+                var dependents = await _context.Users
+                    .Where(u => u.ChavrisaId == userId)
+                    .ToListAsync();
+
+                if (dependents.Any())
+                {
+                    foreach (var d in dependents)
+                    {
+                        d.ChavrisaId = null;
+                        _context.Users.Update(d);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                // Now safe to remove the user
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                await tx.CommitAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                await tx.RollbackAsync();
+                return StatusCode(500, new { message = "Error deleting user", detail = ex.Message });
+            }
         }
     }
 }
