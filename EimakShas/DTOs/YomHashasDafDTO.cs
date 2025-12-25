@@ -8,5 +8,8 @@
         public string MasechtaName { get; set; }
         public int MasechtaOrder { get; set; }
         public bool IsCompleted { get; set; }
+        public string Chavrisa1 { get; set; }
+        public string Chavrisa2 { get; set; }
+
     }
 }

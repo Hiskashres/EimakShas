@@ -134,7 +134,9 @@ namespace EimakShas.Services
                     MasechtaId = daf.Daf.Masechta.MasechtaId,
                     MasechtaName = daf.Daf.Masechta.MasechtaName,
                     MasechtaOrder = daf.Daf.Masechta.MasechtaOrder,
-                    IsCompleted = daf.Daf.IsCompleted_Daf
+                    IsCompleted = daf.Daf.IsCompleted_Daf,
+                    Chavrisa1 = ,
+                    Chavrisa2 =
                 });
             }
 
