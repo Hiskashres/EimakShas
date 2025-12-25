@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace EimakShas.Models
 {
@@ -32,6 +33,7 @@ namespace EimakShas.Models
 
         public User? Chavrisa { get; set; }
 
+        //[JsonIgnore]
         public User? LinkedTo { get; set; }
 
         public ICollection<UserUmid>? UserUmidim { get; set; } = [];

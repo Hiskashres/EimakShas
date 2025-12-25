@@ -41,5 +41,11 @@ namespace EimakShas.Controllers
         { 
             return Ok(yomHashasService.GetYomHashasInfo());
         }
+
+        [HttpGet("getYomHashasDafim")]
+        public IActionResult getYomHashasDafim()
+        {
+            return Ok(yomHashasService.GetYomHashasDafim());
+        }
     }
 }

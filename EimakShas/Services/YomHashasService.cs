@@ -1,8 +1,6 @@
 ﻿using EimakShas.Data;
 using EimakShas.DTOs;
-using EimakShas.Interfaces;
 using EimakShas.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace EimakShas.Services
@@ -21,7 +19,8 @@ namespace EimakShas.Services
             // Add selected dafim
             foreach (int dafId in dafimIds) 
             {
-                bool alreadyAssignd = _context.YomHashas_Dafim.Any(d => d.DafId == dafId);
+                bool alreadyAssignd = _context.YomHashas_Dafim
+                    .Any(d => d.DafId == dafId);
 
                 if (!alreadyAssignd)
                 {
@@ -33,6 +32,7 @@ namespace EimakShas.Services
 
             // Remove deselected dafim
             deselectedDafim = _context.YomHashas_Dafim
+                .Include(d => d.Daf.Masechta)
                 .Where(d => !dafimIds2.Contains(d.YomHashas_DafId))
                 .ToList();
             foreach (var daf in deselectedDafim)
@@ -47,15 +47,31 @@ namespace EimakShas.Services
 
         public void MarkDafAsCompleted(int dafId)
         {
-            var completedDaf = _context.Dafim
+            var selectedDaf = _context.Dafim
                 .Include(d => d.Masechta)
                 .FirstOrDefault(d => d.DafId == dafId);
 
-            if (completedDaf == null)
-                return;
-
+            var shas = _context.ShasInfo.First();
             var yomHashas = _context.YomHashas.First();
-            yomHashas.DafimCompleted++;
+
+            if (selectedDaf == null) return;
+
+            if (!selectedDaf.IsCompleted_Daf)
+            {
+                yomHashas.DafimCompleted++;
+                selectedDaf.IsCompleted_Daf = true;
+                selectedDaf.Masechta.DafimFinished++;
+                shas.DafimFinished++;
+                shas.DafimLearned++;
+            }
+            else
+            {
+                yomHashas.DafimCompleted--;
+                selectedDaf.IsCompleted_Daf = false;
+                selectedDaf.Masechta.DafimFinished--;
+                shas.DafimFinished--;
+                shas.DafimLearned--;
+            }
 
             // Calculate Goal percentage
             yomHashas.PercentCompleted = eimakShasService.CalculatePercentage(yomHashas.Goal ,yomHashas.DafimCompleted);
@@ -63,11 +79,8 @@ namespace EimakShas.Services
             // Calculate Bonus Goal percentage
             yomHashas.PercentCompleted_Bonus = eimakShasService.CalculatePercentage(yomHashas.BonusGoal, yomHashas.DafimCompleted);
 
-            completedDaf.IsCompleted_Daf = true;
-            completedDaf.Masechta.DafimFinished++;
-            _context.ShasInfo.First().DafimFinished++;
-
             _context.SaveChanges();
+            return;
         }
 
         public void SetGoals(int firstGoal, int bonusGoal, TimeOnly endTime)
@@ -106,5 +119,38 @@ namespace EimakShas.Services
                 PercentageFinished_Bonus = yomHashas.PercentCompleted_Bonus
             };
         }
+
+        public YomHashasDafDTO[] GetYomHashasDafim()
+        {
+            var yomHashas_dafim = _context.YomHashas_Dafim.Include(d => d.Daf).Include(d => d.Daf.Masechta).ToList();
+            var dafimDTO = new List<YomHashasDafDTO>();
+
+            foreach (var daf in yomHashas_dafim)
+            {
+                dafimDTO.Add(new YomHashasDafDTO
+                {
+                    DafId = daf.DafId,
+                    DafLetter = daf.Daf.DafLetter,
+                    MasechtaId = daf.Daf.Masechta.MasechtaId,
+                    MasechtaName = daf.Daf.Masechta.MasechtaName,
+                    MasechtaOrder = daf.Daf.Masechta.MasechtaOrder,
+                    IsCompleted = daf.Daf.IsCompleted_Daf
+                });
+            }
+
+            return dafimDTO.ToArray();
+        }
+
+        //public User[] GetUsers()
+        //{
+        //    var users = _context.Users
+        //        .Include(u => u.yomHashas_Dafim)
+        //        .ToList();
+
+        //    foreach (var user in users)
+        //    {
+
+        //    }
+        //}
     }
 }

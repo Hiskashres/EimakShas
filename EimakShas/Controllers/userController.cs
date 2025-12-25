@@ -1,4 +1,5 @@
 ﻿using EimakShas.Data;
+using EimakShas.DTOs;
 using EimakShas.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,29 @@ namespace EimakShas.Controllers
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _context.Users.ToListAsync();
-            return Ok(users);
+            var users = _context.Users.Include(u => u.Chavrisa).ToList();
+            var usersDTO = new List<GetUsersDTO>();
+
+            foreach (var user in users)
+            {
+                usersDTO.Add(new GetUsersDTO
+                {
+                    UserId = user.UserId,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Phone = user.Phone,
+                    DafimAmount = user.DafimAmount,
+                    DafimCompleted = user.DafimFinished,
+                    DafimNotCompleted = user.DafimAmount - user.DafimFinished,
+                    PercentageCompleted = user.PercentageFinished,
+                    DafPerDay = user.DafPerDay,
+                    HasText = user.HasText,
+                    ChavrisaId = user.ChavrisaId,
+                    ChavrisaName = user.Chavrisa.FirstName + " " + user.Chavrisa.LastName
+                });
+
+            }
+            return Ok(usersDTO);
         }
 
         [HttpGet("userMasechtas")]
