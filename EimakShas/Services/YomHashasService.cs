@@ -122,11 +122,24 @@ namespace EimakShas.Services
 
         public YomHashasDafDTO[] GetYomHashasDafim()
         {
-            var yomHashas_dafim = _context.YomHashas_Dafim.Include(d => d.Daf).Include(d => d.Daf.Masechta).ToList();
+            var yomHashas_dafim = _context.YomHashas_Dafim
+                .Include(d => d.Daf)
+                .Include(d => d.Daf.Masechta)
+                .ToList();
             var dafimDTO = new List<YomHashasDafDTO>();
 
             foreach (var daf in yomHashas_dafim)
             {
+                var linkedUsers = _context.UserUmidim
+                            .Include(uu => uu.User)
+                            .Include(uu => uu.Umid)
+                            .Where(uu => uu.Umid.DafId == daf.DafId)
+                            .Select(uu => uu.User)
+                            .Distinct()
+                            .OrderBy(u => u.UserId) // optional ordering
+                            .ToList(); string chavrisa1 = linkedUsers.Count >= 1 ? $"{linkedUsers[0].FirstName} {linkedUsers[0].LastName}" : null;
+                string chavrisa2 = linkedUsers.Count >= 2 ? $"{linkedUsers[1].FirstName} {linkedUsers[1].LastName}" : null;
+
                 dafimDTO.Add(new YomHashasDafDTO
                 {
                     DafId = daf.DafId,
@@ -135,8 +148,8 @@ namespace EimakShas.Services
                     MasechtaName = daf.Daf.Masechta.MasechtaName,
                     MasechtaOrder = daf.Daf.Masechta.MasechtaOrder,
                     IsCompleted = daf.Daf.IsCompleted_Daf,
-                    Chavrisa1 = ,
-                    Chavrisa2 =
+                    Chavrisa1 = chavrisa1,
+                    Chavrisa2 = chavrisa2
                 });
             }
 
